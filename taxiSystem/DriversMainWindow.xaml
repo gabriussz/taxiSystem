@@ -1,0 +1,63 @@
+﻿<Window x:Class="taxiSystem.DriversMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:taxiSystem"
+        mc:Ignorable="d"
+        Title="DriversMainWindow" Height="263.372" Width="463.081">
+    <Grid Margin="0,0,0,-1" Background="#FF4582C1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="109*"/>
+            <ColumnDefinition Width="79*"/>
+            <ColumnDefinition Width="203*"/>
+        </Grid.ColumnDefinitions>
+        <ListView x:Name="CarListView" FontSize="13" HorizontalAlignment="Left" Height="89" Margin="109,32,0,0" VerticalAlignment="Top" Width="336" Panel.ZIndex="1" Background="#FF8CB0F7" BorderBrush="{x:Null}" Foreground="Black" Grid.ColumnSpan="3">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding id}" Width="40"/>
+                    <GridViewColumn Header="Car" DisplayMemberBinding="{Binding car}" Width="150"/>
+                    <GridViewColumn Header="Select" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Select" Background="#FFFFF376" HorizontalAlignment="Stretch" FontSize="11" Click="SelectCar" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Delete" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Delete" Background="#FFFFF376" HorizontalAlignment="Stretch" FontSize="11" Click="RemoveCar" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <Label x:Name="LabelEnterLoc" Content="Your location" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Height="26" Width="85" FontWeight="Bold" Foreground="White"/>
+        <Label x:Name="LabelEnterLocX" Content="X:" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Height="26" Width="21" Foreground="White"/>
+        <Label x:Name="LabelEnterLocY" Content="Y:" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" Height="26" Width="21" Foreground="White"/>
+        <Label x:Name="LabelSuccesfulLoc" Content="" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Width="112" Height="26" Foreground="White"/>
+        <TextBox x:Name="xCordLoc" HorizontalAlignment="Left" Height="23" Margin="36,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Background="#FF8CB0F7" BorderBrush="{x:Null}" Foreground="White"/>
+        <TextBox x:Name="yCordLoc" HorizontalAlignment="Left" Height="23" Margin="36,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Background="#FF8CB0F7" BorderBrush="{x:Null}" Foreground="White"/>
+        <Button x:Name="btnAddLoc" Content="Add Location" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="85" Click="addLoc_Click" Height="20" Background="#FFFFF376" BorderBrush="{x:Null}"/>
+        <TextBox x:Name="AddYear" HorizontalAlignment="Left" Height="23" Margin="10,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Background="#FF8CB0F7" BorderBrush="{x:Null}" Foreground="White"/>
+        <TextBox x:Name="AddSize" HorizontalAlignment="Left" Height="23" Margin="83,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Background="#FF8CB0F7" BorderBrush="{x:Null}" Foreground="White" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="AddModel" HorizontalAlignment="Left" Height="23" Margin="29,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Background="#FF8CB0F7" BorderBrush="{x:Null}" Foreground="White" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <Label x:Name="LabelAddYear" Content="Year" HorizontalAlignment="Left" Margin="10,171,0,0" VerticalAlignment="Top" Width="68" Height="26" Foreground="White"/>
+        <Label x:Name="LabelAddSize" Content="Size" Margin="83,171,59,0" VerticalAlignment="Top" Height="26" Foreground="White" Grid.ColumnSpan="2"/>
+        <Label x:Name="LabelAddModel" Content="Model" HorizontalAlignment="Left" Margin="34,174,0,0" VerticalAlignment="Top" Width="68" Height="26" Foreground="White" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <Label x:Name="LabelSuccesfulCar" Content="" HorizontalAlignment="Left" Margin="104,197,0,0" VerticalAlignment="Top" Width="112" Height="26" Foreground="White" Grid.Column="2"/>
+        <Button x:Name="btnAddCar" Content="Add Car" HorizontalAlignment="Left" Margin="5,200,0,0" VerticalAlignment="Top" Width="85" Click="AddCar_Click" Height="23" Background="#FFFFF376" BorderBrush="{x:Null}" Grid.Column="2"/>
+        <Label x:Name="LabelActiveCar" Content="" HorizontalAlignment="Left" Margin="5,148,0,0" VerticalAlignment="Top" Width="294" Height="26" Foreground="White" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <Button x:Name="btnRefreshList" Content="Refresh" HorizontalAlignment="Left" Margin="109,120,0,0" VerticalAlignment="Top" Width="336" Click="btnRefresh_Click" Height="20" Background="#FFFFF376" BorderBrush="{x:Null}" Grid.ColumnSpan="3"/>
+        <Label x:Name="LabelHelloUser" Content="" HorizontalAlignment="Left" Margin="69,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="3,0.5" Width="53" Height="26" Foreground="White"/>
+        <Button x:Name="btnLogout" Content="Logout" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.107,0.2" Click="btnLogout_Click" Height="20" Background="#FFFFF376" BorderBrush="{x:Null}"/>
+    </Grid>
+</Window>
