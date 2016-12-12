@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,30 +17,125 @@ using System.Windows.Shapes;
 
 namespace taxiSystem
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    public class userLogin: INotifyPropertyChanged
+    {
+        private string log = null;
+        private string pas = null;
+        public string regpas = null;
+        private string pasrep = null;
+        public event PropertyChangedEventHandler PropertyChanged;
+        public string loginBox
+        {
+            get{return log;}
+            set
+            {
+                log = value;
+                OnPropertyChanged("loginBox");
+            }
+        }
+        public string passBox
+        {
+            get{return pas;}
+            set
+            {
+                pas = value;
+                OnPropertyChanged("passBox");
+            }
+        }
+        public string regBox
+        {
+            get { return pas; }
+            set
+            {
+                pas = value;
+                OnPropertyChanged("regBox");
+            }
+        }
+        public string regPassBox
+        {
+            get { return regpas; }
+            set
+            {
+                regpas = value;
+                OnPropertyChanged("regPassBox");
+            }
+        }
+        public string regPassBoxRep
+        {
+            get { return pasrep; }
+            set
+            {
+                pasrep = value;
+                OnPropertyChanged("regPassBoxRep");
+            }
+        }
+        protected void OnPropertyChanged(string property)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+    }
+    
+    public class loginValidator : ValidationRule
+    {
+        public override ValidationResult Validate (object value, CultureInfo cultureInfo)
+        {
+            if (value.ToString() == "")
+                return new ValidationResult(false, null);
+            else
+            {
+                if (value.ToString().Length < 3)
+                    return new ValidationResult(false, null);
+            }
+            return ValidationResult.ValidResult;
+        }
+    }
+    public class registerValidator : ValidationRule
+    {
+        public userLogin usLog = new userLogin();
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            if (value.ToString() != usLog.regpas)
+                return new ValidationResult(false, null);
+            return ValidationResult.ValidResult;
+        }
+    }
+
     public partial class MainWindow : Window
     {
+        public int errorCount = 0;
+
         public MainWindow()
         {
             InitializeComponent();
+            userLogin usLog = new userLogin();
+            this.DataContext = usLog;
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ((Control)sender).GetBindingExpression(TextBox.TextProperty).UpdateSource();
+        }
+
+        private void Error(object sender, ValidationErrorEventArgs e)
+        {
+            if (e.Action == ValidationErrorEventAction.Added)
+                errorCount++;
+            else
+                errorCount--;
+            login.IsEnabled = errorCount > 0 ? false : true;
+            register.IsEnabled = errorCount > 0 ? false : true;
         }
 
         private void login_Click(object sender, RoutedEventArgs e)
         {
             using (TaxiDBEntities2 context = new TaxiDBEntities2())
             {
-                Passenger passenger = context.Passengers.FirstOrDefault(c => c.Username == loginUser.Text && c.Password == loginPass.Password);
+                Passenger passenger = context.Passengers.FirstOrDefault(c => c.Username == loginUser.Text && c.Password == loginPass.Text);
                 if (passenger != null)
-                { 
+                {
                     systemWindow win = new systemWindow(passenger.Username);
                     win.Show();
                     this.Close();
-                }
-                else
-                {
-                    labelErrLogin.Content = "Incorrect usename or password";
                 }
             }
         }
@@ -95,7 +192,3 @@ namespace taxiSystem
     }
 } 
 
-//history of trips  +
-//rusiuoti pagal data   +
-//bendra kelioniu statistika    +
-//change locaation of driver

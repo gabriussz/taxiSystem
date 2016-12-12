@@ -79,8 +79,8 @@ namespace taxiSystem
                                 TripDriver td = new TripDriver();
                                 td.id = driver.Id;
                                 td.car = (car.Model + " " + car.Year + " seats: " + car.Size);
-                                td.time = time(driver);
-                                td.price = price(driver);
+                                td.time = driver.time(int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text), durationKm).ToString();
+                                td.price = driver.price(int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text), Convert.ToDouble(driver.Price), pricePKM);
                                 tripDr.Add(td);
                             }
                         }
@@ -99,34 +99,8 @@ namespace taxiSystem
             }
         }
 
-        private string price(Driver driver)
-        {
-            double dist = double.Parse(distance(int.Parse(xCordDest.Text), int.Parse(yCordDest.Text), int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text)));
-            string test = driver.Price.ToString();
-            string price = !string.IsNullOrEmpty(test) ? test : pricePKM.ToString();
-            double tripPrice = double.Parse(price) * dist;
-            return tripPrice.ToString("N2");
-        }
 
-        public string time(Driver driver)
-        {
-            double dist = double.Parse(distance(driver.CoordX, driver.CordY, int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text)));
-            double temp = durationKm * dist;
-            int minutes = Convert.ToInt32(Math.Floor(temp));
-            int seconds = Convert.ToInt32((temp - Math.Truncate(temp)) * 0.6 * 100);
-            temp = seconds + minutes * 60;
-            TimeSpan time = TimeSpan.FromSeconds(temp);
-            string str = time.ToString(@"hh\:mm\:ss");
-            return str;
-        }
-
-        public string distance(int x, int y, int destX, int destY)
-        {
-            var a = Math.Abs(x - destX);
-            var b = Math.Abs(y - destY);
-            var ret = string.Format("{0:0.00}", Math.Sqrt(b * b + a * a));
-            return ret;
-        }
+        
         private void SelectDriver(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
@@ -147,8 +121,8 @@ namespace taxiSystem
                     StartTime = DateTime.Now,
                     CarNr = car.Id,
                     PassengerNr = ps.Id,
-                    Price = double.Parse(distance(int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text), int.Parse(xCordDest.Text), int.Parse(yCordDest.Text))) * dr.Price,
-                    Range = double.Parse(distance(int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text), int.Parse(xCordDest.Text), int.Parse(yCordDest.Text))),
+                    Price = position.distance(int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text), int.Parse(xCordDest.Text), int.Parse(yCordDest.Text)) * dr.Price,
+                    Range = position.distance(int.Parse(xCordLoc.Text), int.Parse(yCordLoc.Text), int.Parse(xCordDest.Text), int.Parse(yCordDest.Text)),
                     Status = false
                 });
                 context.SaveChanges();
@@ -237,7 +211,6 @@ namespace taxiSystem
             }
         }
 
-
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Are you sure you want to log out?", "Disclaimer", MessageBoxButton.YesNo);
@@ -260,7 +233,7 @@ namespace taxiSystem
             Panel.SetZIndex(StatisticsBox, -1);
             Passenger pas;
             List<TripHistory> TrDet = new List<TripHistory>();
-            using (TaxiDBEntities2 context = new TaxiDBEntities2())
+            using (TaxiDBEntities2 context = new TaxiDBEntities2()) //!!!!!!
             {
                 pas = context.Passengers.First(c => c.Username == user);
                 var trs = context.Trips.Where(c => c.PassengerNr == pas.Id).ToList();
@@ -293,24 +266,40 @@ namespace taxiSystem
             }
         }
     }
+    public partial class Driver
+    {
+        public string price(int xCordLoc, int yCordLoc, double price, double pricePKM)
+        {
+            double dist = position.distance(this.CoordX, this.CordY, xCordLoc, yCordLoc);
+            string test = price.ToString();
+            string prc = !string.IsNullOrEmpty(test) ? test : pricePKM.ToString();
+            double tripPrice = double.Parse(prc) * dist;
+            return tripPrice.ToString("N2");
+        }
+
+        public TimeSpan time(int xCordLoc, int yCordLoc, double durationKm)
+        {
+            double dist = position.distance(this.CoordX, this.CordY, xCordLoc, yCordLoc);
+            double temp = durationKm * dist;
+            int minutes = Convert.ToInt32(Math.Floor(temp));
+            int seconds = Convert.ToInt32((temp - Math.Truncate(temp)) * 0.6 * 100);
+            temp = seconds + minutes * 60;
+            TimeSpan time = TimeSpan.FromSeconds(temp);
+            return time;
+        }
+    }
+
+    public class position
+    {
+        public static double distance(int x, int y, int destX, int destY)
+        {
+            var a = Math.Abs(x - destX);
+            var b = Math.Abs(y - destY);
+            var ret = Math.Sqrt(b * b + a * a);
+            return ret;
+        }
+    }
 }
 
 
-
-
-
-
-
-
-
-
-/*            //Image i = new Image();
-            //BitmapImage src = new BitmapImage();
-            //src.BeginInit();
-            //src.UriSource = new Uri("C:\\Computer\\studijos\\2k\\TOP\\trecioji\\taxiSystem\\taxi-driver.jpg", UriKind.Relative);
-            //src.CacheOption = BitmapCacheOption.OnLoad;
-            //src.EndInit();
-            //i.Source = src;
-            //i.Stretch = Stretch.Uniform;
-            //DriverPhoto.Children.Add(i);
-*/
+//validation

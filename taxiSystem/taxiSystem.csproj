@@ -118,6 +118,7 @@
     <Compile Include="Trip.cs">
       <DependentUpon>TaxiDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Validation.cs" />
     <Page Include="DriversMainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
