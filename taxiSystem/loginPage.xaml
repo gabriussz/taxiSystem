@@ -68,7 +68,7 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        <Button x:Name="register" Content="Register" HorizontalAlignment="Left" Margin="130,188,0,0" VerticalAlignment="Top" Width="75" Click="register_Click" Grid.Column="1" Background="#FFFFF376" BorderBrush="{x:Null}" IsEnabled="False"/>
+        <Button x:Name="register" Content="Register" HorizontalAlignment="Left" Margin="130,188,0,0" VerticalAlignment="Top" Width="75" Click="register_Click" Grid.Column="1" Background="#FFFFF376" BorderBrush="{x:Null}"/>
         <Button x:Name="btnDriversMode" Content="For Drivers" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top" Width="75" Click="driversMode_Click" Background="#FFFFF376" BorderBrush="{x:Null}"/>
     </Grid>
 </Window>

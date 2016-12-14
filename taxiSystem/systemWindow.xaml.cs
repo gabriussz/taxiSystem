@@ -54,11 +54,16 @@ namespace taxiSystem
         public double durationKm = 0.3;
         public double pricePKM = 0.5;
         public string user;
+        public Passenger loggedPass;
         public systemWindow(string LoggedUser)
         {
             InitializeComponent();
             user = LoggedUser;
             LabelHelloUser.Content = "Hello "+user;
+            using (TaxiDBEntities2 context = new TaxiDBEntities2())
+            {
+                loggedPass = context.Passengers.First(c => c.Username == user);
+            }
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -231,19 +236,12 @@ namespace taxiSystem
             Panel.SetZIndex(DriversSearch, -1);
             Panel.SetZIndex(TripHistoryDatagrid, 1);
             Panel.SetZIndex(StatisticsBox, -1);
-            Passenger pas;
-            List<TripHistory> TrDet = new List<TripHistory>();
-            using (TaxiDBEntities2 context = new TaxiDBEntities2()) //!!!!!!
-            {
-                pas = context.Passengers.First(c => c.Username == user);
-                var trs = context.Trips.Where(c => c.PassengerNr == pas.Id).ToList();
-            }
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TaxiDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText = "SELECT Range, Price, StartTime, EndTime, Status, StartX, StartY, EndX, EndY FROM Trip WHERE PassengerNr = @pasNr";
-            command.Parameters.AddWithValue("@pasNr", pas.Id);
+            command.Parameters.AddWithValue("@pasNr", loggedPass.Id);
             DataTable data = new DataTable();
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(data);

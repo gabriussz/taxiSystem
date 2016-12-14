@@ -21,7 +21,7 @@ namespace taxiSystem
     {
         private string log = null;
         private string pas = null;
-        public string regpas = null;
+        public static string regpas = null;
         private string pasrep = null;
         public event PropertyChangedEventHandler PropertyChanged;
         public string loginBox
@@ -91,10 +91,9 @@ namespace taxiSystem
     }
     public class registerValidator : ValidationRule
     {
-        public userLogin usLog = new userLogin();
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (value.ToString() != usLog.regpas)
+            if (value.ToString() != userLogin.regpas)
                 return new ValidationResult(false, null);
             return ValidationResult.ValidResult;
         }
@@ -123,7 +122,6 @@ namespace taxiSystem
             else
                 errorCount--;
             login.IsEnabled = errorCount > 0 ? false : true;
-            register.IsEnabled = errorCount > 0 ? false : true;
         }
 
         private void login_Click(object sender, RoutedEventArgs e)
